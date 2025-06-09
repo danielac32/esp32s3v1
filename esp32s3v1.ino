@@ -38,9 +38,8 @@ _w55.begin();
   _display.begin();
   */
   
-  
-  // core._display.fillScreen(Color565(0,0,0));
-_display.setTextColor(Color565(255,255,255),Color565(0,0,255));
+_display.fillScreen(Color565(0,0,0));
+_display.setTextColor(Color565(255,255,255),Color565(0,0,0));
 _display.printf("Hola mundo!\n");
 _display.printf("Este es un mensaje\nen varias lineas.\n");
 _display.printf("Pantalla: %dx%d\n", TFT_WIDTH, TFT_HEIGHT);
