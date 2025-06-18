@@ -13,6 +13,7 @@ public:
     SystemCore();
     void begin();
     void run();
+    
 
     // Accesores
     //DisplayManager& getDisplay() { return _display; }

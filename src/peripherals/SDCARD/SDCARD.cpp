@@ -44,3 +44,56 @@ void SDCARD::begin(){
   Serial.printf("Used space: %lluMB\n", SD_MMC.usedBytes() / (1024 * 1024));
 
 }
+
+Memory SDCARD::loadRiscvKernel(char* filename){
+    Memory mem;
+    mem.p = NULL;
+    mem.size = 0;
+
+    Serial.printf("Abriendo archivo: %s\n", filename);
+
+    fs::File file = SD_MMC.open(filename);
+    if (!file) {
+        Serial.println("Error: No se pudo abrir el archivo.");
+        return mem; // Retorna con valores nulos
+    }
+
+    if (file.isDirectory()) {
+        Serial.println("Error: Es un directorio, no un archivo.");
+        file.close();
+        return mem;
+    }
+
+    mem.size = file.size(); // Aquí usamos .size() del fs::File
+    mem.p = (char*)ps_malloc(DRAM_SIZE); // Reservamos espacio fijo
+
+    if (!mem.p) {
+        Serial.println("Error: No se pudo asignar memoria.");
+        file.close();
+        mem.size = 0;
+        return mem;
+    }
+
+    size_t bytes_read = file.readBytes(mem.p, mem.size);
+    file.close();
+
+    if (bytes_read != mem.size) {
+        Serial.println("Error: Lectura incompleta del archivo.");
+        free(mem.p);
+        mem.p = NULL;
+        mem.size = 0;
+    } else {
+        Serial.printf("Archivo cargado correctamente (%u bytes)\n", mem.size);
+    }
+
+    return mem;
+}
+ 
+
+void SDCARD::free_memory(Memory *mem) {
+    if (mem->p) {
+        free(mem->p);
+        mem->p = NULL;
+        mem->size = 0;
+    }
+}

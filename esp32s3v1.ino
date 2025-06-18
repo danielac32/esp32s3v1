@@ -1,10 +1,14 @@
 
 #include <src/SystemCore.h>
+#include <src/RISCV/RISCV_WRAPPER.h>
+
 //#include "src/peripherals/ST7735/ST7735.h"
-//#include "src/peripherals/ETHERNET/W5500.h"
+//#include "src/peripherals/SDCARD/SDCARD.h"
+
 SystemCore core;
 ST7735& _display = core._display;
-
+SDCARD& disk = core._sdcard;
+Memory mem;
 
 /*
 #define TFT_CS   21   // Chip Select
@@ -23,9 +27,15 @@ ST7735 _display(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK);
 W55 _w55(ETH_CS,ETH_IRQ,ETH_RST,ETH_SPI_SCK,ETH_SPI_MISO,ETH_SPI_MOSI);
 */
 
+
+
+
+
 void setup() {
  // Serial.begin(115200);
   core.begin();
+  mem=disk.loadRiscvKernel("kernel.bin");
+ 
  // core._w55.begin();
 /*
  pinMode(TFT_RST, OUTPUT);
@@ -44,6 +54,9 @@ _display.printf("Hola mundo!\n");
 _display.printf("Este es un mensaje\nen varias lineas.\n");
 _display.printf("Pantalla: %dx%d\n", TFT_WIDTH, TFT_HEIGHT);
  delay(2000);
+
+
+
 }
 
 void loop() {
